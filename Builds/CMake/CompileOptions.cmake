@@ -33,17 +33,6 @@ set(DEFAULT_PROJECT_OPTIONS
     POSITION_INDEPENDENT_CODE ON
 )
 
-# HIP sources inherit CXX_STANDARD. On Windows they compile against the MSVC
-# STL, whose C++23 <cmath> declares isfinite/isinf/isnan/isnormal
-# __host__ __device__, which clang's HIP math headers then redeclare
-# __device__-only and fail. Compile HIP sources as C++20 on Windows.
-if (USE_HIP AND WIN32)
-    list(APPEND DEFAULT_PROJECT_OPTIONS
-        HIP_STANDARD              20
-        HIP_STANDARD_REQUIRED     ON
-    )
-endif ()
-
 #
 # Include directories
 #

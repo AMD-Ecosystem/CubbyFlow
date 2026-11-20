@@ -84,6 +84,14 @@ if (USE_HIP)
     # device-vs-host __CUDA_ARCH__ idiom is defined before any header uses it.
     set(CMAKE_HIP_FLAGS
         "${CMAKE_HIP_FLAGS} -include \"${CUBBYFLOW_CUDA_TO_HIP_HEADER}\"")
+    # Older ROCm clang cannot compile HIP at C++23 against a constexpr <cmath>
+    # (MSVC STL today); drop this once ROCm carries llvm/llvm-project#201563.
+    include(HipCxx23Shim)
+    cubbyflow_hip_cxx23_shim(CUBBYFLOW_HIP_CXX23_SHIM_DIR)
+    if (CUBBYFLOW_HIP_CXX23_SHIM_DIR)
+        set(CMAKE_HIP_FLAGS
+            "${CMAKE_HIP_FLAGS} -I\"${CUBBYFLOW_HIP_CXX23_SHIM_DIR}\"")
+    endif()
     add_compile_definitions(CUBBYFLOW_USE_CUDA)
     # rocThrust picks its backend from compiler detection (__CUDACC__ under
     # nvcc, the host compiler otherwise), never from this project's macros.
